@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>เมนูร้านอาหาร</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { color: #333; }
+    .item { margin: 10px 0; display: flex; align-items: center; }
+    .item img { margin-right: 10px; border-radius: 8px; }
+    .soldout { color: red; font-weight: bold; }
+    button { margin-left: 5px; }
+  </style>
+</head>
+<body>
+
+<h2>เมนูร้านอาหาร</h2>
+<div id="menu"></div>
+
+<h3>จัดการ Stock (สำหรับทดลอง)</h3>
+<div id="controls"></div>
+
+<script>
+const menuItems = [
+  { name: "ข้าวกะเพรา", price: 50, stock: 5, img: "krapao.jpg" },
+  { name: "ผัดไทย", price: 60, stock: 0, img: "padthai.jpg" },
+  { name: "ส้มตำ", price: 40, stock: 2, img: "somtam.jpg" },
+  { name: "ต้มยำกุ้ง", price: 80, stock: 3, img: "tomyam.jpg" }
+];
+
+function renderMenu() {
+  const menuDiv = document.getElementById("menu");
+  menuDiv.innerHTML = "";
+  menuItems.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+
+    const imgTag = document.createElement("img");
+    imgTag.src = item.img;
+    imgTag.width = 100;
+    div.appendChild(imgTag);
+
+    const text = document.createElement("span");
+    text.textContent = item.stock > 0 ? `${item.name} - ${item.price} บาท` : `${item.name} - หมด`;
+    if(item.stock === 0) text.classList.add("soldout");
+    div.appendChild(text);
+
+    menuDiv.appendChild(div);
+  });
+}
+
+function renderControls() {
+  const ctrlDiv = document.getElementById("controls");
+  ctrlDiv.innerHTML = "";
+  menuItems.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.textContent = `${item.name} stock: ${item.stock}`;
+    
+    const btnAdd = document.createElement("button");
+    btnAdd.textContent = "+";
+    btnAdd.onclick = () => { item.stock++; updateAll(); };
+    
+    const btnSub = document.createElement("button");
+    btnSub.textContent = "-";
+    btnSub.onclick = () => { if(item.stock>0) item.stock--; updateAll(); };
+    
+    div.appendChild(btnAdd);
+    div.appendChild(btnSub);
+    ctrlDiv.appendChild(div);
+  });
+}
+
+function updateAll(){
+  renderMenu();
+  renderControls();
+}
+
+updateAll();
+
+// จำลองเรียลไทม์ ลด stock อัตโนมัติ
+setInterval(() => {
+  menuItems.forEach(item => {
+    if(item.stock>0 && Math.random()<0.2){
+      item.stock--;
+    }
+  });
+  renderMenu();
+}, 5000);
+
+</script>
+</body>
+</html>
